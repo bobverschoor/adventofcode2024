@@ -1,6 +1,5 @@
 import unittest
 
-from day_1.day1 import Day1
 
 
 class day(unittest.TestCase):
