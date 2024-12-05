@@ -10,3 +10,5 @@ wheels/
 .venv
 
 .idea
+day_*/input.txt
+day_*/test_input.txt
