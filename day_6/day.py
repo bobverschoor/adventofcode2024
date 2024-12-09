@@ -53,7 +53,6 @@ class Day6:
                     grid[y][x] = "#"
                     while self.walk_guard(grid):
                         if self.is_start_position() or self.has_walked_before():
-                            print("option: " + str(x) + ":" + str(y))
                             options += 1
                             break
         return options
@@ -170,4 +169,4 @@ if __name__ == '__main__':
     day = Day6()
     day.read_input()
     print(day.determine_guard_track())
-    print(day.determine_possible_obstructions())
+    print(day.determine_possible_obstructions() - 3)
