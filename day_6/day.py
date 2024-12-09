@@ -41,23 +41,21 @@ class Day6:
 
     def determine_possible_obstructions(self):
         options = 0
-        for y in range(len(self.input)):
-            for x in range(len(self.input[y])):
-                if self.input[y][x] != "#" and self.input[y][x] != "^":
+        possibilities = self.new_track()
+        for y in range(len(possibilities)):
+            for x in range(len(possibilities[y])):
+                if is_possibilities(possibilities[y][x]):
                     grid = self.new_input()
                     self.init_track()
                     self.guard_x = self.init_guard_x
                     self.guard_y = self.init_guard_y
                     self.guard_direction = self.init_guard_direction
-                    self.loop_detected = False
                     grid[y][x] = "#"
-                    self.print_track()
                     while self.walk_guard(grid):
-                        pass
-                    if self.loop_detected:
-                        print("option: " + str(x) + ":" + str(y))
-                        self.print_track()
-                        options += 1
+                        if self.is_start_position() or self.has_walked_before():
+                            print("option: " + str(x) + ":" + str(y))
+                            options += 1
+                            break
         return options
 
     def determine_guard_track(self):
@@ -79,54 +77,34 @@ class Day6:
                 while area[self.guard_y][self.guard_x] != "#":
                     if self.guard_x < 0 or self.guard_y < 0:
                         raise IndexError
-                    if self.guard_direction in self.track[self.guard_y][self.guard_x]:
-                        self.loop_detected = True
-                        raise IndexError
-                    if self.track[self.guard_y][self.guard_x] == ['.']:
-                        self.track[self.guard_y][self.guard_x] = []
                     self.track[self.guard_y][self.guard_x].append(self.guard_direction)
                     self.guard_y -= 1
-                self.guard_y += 1
                 self.guard_direction = ">"
+                self.guard_y += 1
             elif self.guard_direction == ">":
                 while area[self.guard_y][self.guard_x] != "#":
                     if self.guard_x < 0 or self.guard_y < 0:
                         raise IndexError
-                    if self.guard_direction in self.track[self.guard_y][self.guard_x]:
-                        self.loop_detected = True
-                        raise IndexError
-                    if self.track[self.guard_y][self.guard_x] == ['.']:
-                        self.track[self.guard_y][self.guard_x] = []
                     self.track[self.guard_y][self.guard_x].append(self.guard_direction)
                     self.guard_x += 1
-                self.guard_x -= 1
                 self.guard_direction = "v"
+                self.guard_x -= 1
             elif self.guard_direction == "v":
                 while area[self.guard_y][self.guard_x] != "#":
                     if self.guard_x < 0 or self.guard_y < 0:
                         raise IndexError
-                    if self.guard_direction in self.track[self.guard_y][self.guard_x]:
-                        self.loop_detected = True
-                        raise IndexError
-                    if self.track[self.guard_y][self.guard_x] == ['.']:
-                        self.track[self.guard_y][self.guard_x] = []
                     self.track[self.guard_y][self.guard_x].append(self.guard_direction)
                     self.guard_y += 1
-                self.guard_y -= 1
                 self.guard_direction = "<"
+                self.guard_y -= 1
             elif self.guard_direction == "<":
                 while area[self.guard_y][self.guard_x] != "#":
                     if self.guard_x < 0 or self.guard_y < 0:
                         raise IndexError
-                    if self.guard_direction in self.track[self.guard_y][self.guard_x]:
-                        self.loop_detected = True
-                        raise IndexError
-                    if self.track[self.guard_y][self.guard_x] == ['.']:
-                        self.track[self.guard_y][self.guard_x] = []
                     self.track[self.guard_y][self.guard_x].append(self.guard_direction)
                     self.guard_x -= 1
-                self.guard_x += 1
                 self.guard_direction = "^"
+                self.guard_x += 1
             return True
         except IndexError:
             #print("Index out of bounds")
@@ -150,7 +128,43 @@ class Day6:
             new_input.append(line)
         return new_input
 
+    def is_start_position(self):
+        if (self.guard_direction == self.init_guard_direction and
+                self.guard_y == self.init_guard_y and
+                self.guard_x == self.init_guard_x):
+            return True
+        return False
 
+    def has_walked_before(self):
+        for y in range(len(self.track)):
+            for x in range(len(self.track[y])):
+                if (is_multiple("^", self.track[y][x]) or is_multiple(">", self.track[y][x]) or
+                        is_multiple("v", self.track[y][x]) or is_multiple("<", self.track[y][x])):
+                    return True
+        return False
+
+    def new_track(self):
+        new_input = []
+        for y in range(len(self.track)):
+            line = []
+            for x in range(len(self.track[y])):
+                line.append(self.track[y][x])
+            new_input.append(line)
+        return new_input
+
+
+def is_multiple(el, ellist):
+    times = 0
+    for kar in ellist:
+        if el == kar:
+            times += 1
+    return times > 1
+
+def is_possibilities(items):
+    for el in items:
+        if el in ["^", ">", "v", "<"]:
+            return True
+    return False
 
 if __name__ == '__main__':
     day = Day6()
