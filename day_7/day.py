@@ -1,5 +1,3 @@
-import itertools
-
 
 class Day7:
     def __init__(self):
@@ -20,33 +18,56 @@ class Day7:
         possible_calibrations = []
         for calc in self.input:
             uitkomst = calc[0]
-            all_permutations = calculate_possibilities(calc[1])
-            print(all_permutations)
+            all_permutations = build_binary_tree(calc[1])
 
 
-def calculate_possibilities(calc):
-    calc_permutations = []
-    for c in calc:
-        if len(calc_permutations) != 0:
-            calc_permutations.append("+")
-            calc_permutations.append(c)
-        else:
-            calc_permutations.append(c)
-    all_permutations = []
-    max_permutations = 2 ** (len(calc) - 1 )
-    for i in range(max_permutations):
-        perm = []
-        for c in range(len(calc_permutations)):
-            if '+' == calc_permutations[c]:
-                perm.append('+')
-                calc_permutations[c] = '*'
-            elif '*' == calc_permutations[c]:
-                perm.append('*')
-                calc_permutations[c] = '+'
-            else:
-                perm.append(calc_permutations[c])
-        all_permutations.append(perm)
-    return all_permutations
+
+class Node:
+    def __init__(self, data):
+        self.plus = None
+        self.multiply = None
+        self.number = data[0]
+        if len(data) > 1:
+            self.insert(data[1:])
+
+    def insert(self, data):
+        self.plus = Node(data)
+        self.multiply = Node(data)
+
+    def uitkomst(self):
+        if self.plus:
+            return self.number + self.plus.uitkomst()
+        if self.multiply:
+            return self.number * self.multiply.uitkomst()
+
+
+def build_binary_tree(calc):
+    return Node(calc)
+
+
+def collect_paths(node, path, paths):
+    if node is None:
+        return
+
+    # Append this node to the path
+    path.append(node.data)
+
+    # If it's a leaf node, store the path
+    if node.left is None and node.right is None:
+        paths.append(list(path))
+    else:
+        # Otherwise, try both subtrees
+        collect_paths(node.left, path, paths)
+        collect_paths(node.right, path, paths)
+    # Backtrack: remove the last element from the path
+    path.pop()
+
+
+def paths(root):
+    paths = []
+    collect_paths(root, [], paths)
+    return paths
+
 
 
 if __name__ == '__main__':
