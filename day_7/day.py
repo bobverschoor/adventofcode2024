@@ -23,22 +23,18 @@ class Day7:
 
 
 class Node:
-    def __init__(self, data):
+    def __init__(self, data, operator = ""):
         self.plus = None
         self.multiply = None
         self.number = data[0]
+        self.operator = operator
         if len(data) > 1:
             self.insert(data[1:])
 
     def insert(self, data):
-        self.plus = Node(data)
-        self.multiply = Node(data)
+        self.left = Node(data, "+")
+        self.right = Node(data, "*")
 
-    def uitkomst(self):
-        if self.plus:
-            return self.number + self.plus.uitkomst()
-        if self.multiply:
-            return self.number * self.multiply.uitkomst()
 
 
 def build_binary_tree(calc):
