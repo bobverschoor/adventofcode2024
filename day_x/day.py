@@ -1,9 +1,9 @@
 class Day:
     def __init__(self):
-        self._inputfilename = "input.txt"
+        self._input_filename = "input.txt"
 
     def read_input(self):
-        with open(self._inputfilename) as f:
+        with open(self._input_filename) as f:
             lines = f.readlines()
         for line in lines:
             pass
