@@ -11,4 +11,4 @@ wheels/
 
 .idea
 day_*/input.txt
-day_*/test_input.txt
+day_*/test_input*.txt
